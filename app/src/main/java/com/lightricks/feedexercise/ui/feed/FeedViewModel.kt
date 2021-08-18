@@ -1,9 +1,12 @@
 package com.lightricks.feedexercise.ui.feed
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.lifecycle.*
 import com.lightricks.feedexercise.data.FeedItem
 import com.lightricks.feedexercise.data.FeedRepository
+import com.lightricks.feedexercise.database.getDatabase
+import com.lightricks.feedexercise.network.FeedApi
 import com.lightricks.feedexercise.util.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -39,13 +42,15 @@ open class FeedViewModel(private val repository: FeedRepository) : ViewModel() {
 
     @SuppressLint("CheckResult")
     fun loadFeedItems() {
-        compositeDisposable.add(repository.refresh()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ handleSuccess() }, { error -> handleNetworkError(error) }))
+        compositeDisposable.add(
+            repository.refresh()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ handleSuccess() }, { error -> handleNetworkError(error) })
+        )
     }
 
-    override fun onCleared(){
+    override fun onCleared() {
         compositeDisposable.clear()
     }
 
@@ -68,11 +73,17 @@ open class FeedViewModel(private val repository: FeedRepository) : ViewModel() {
  * It's not necessary to use this factory at this stage. But if we will need to inject
  * dependencies into [FeedViewModel] in the future, then this is the place to do it.
  */
-class FeedViewModelFactory(private val repository: FeedRepository) : ViewModelProvider.Factory {
+class FeedViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+
         if (!modelClass.isAssignableFrom(FeedViewModel::class.java)) {
             throw IllegalArgumentException("factory used with a wrong class")
         }
+
+        val repository = FeedRepository(
+            FeedApi, getDatabase(context)
+        )
+
         @Suppress("UNCHECKED_CAST")
         return FeedViewModel(repository) as T
     }

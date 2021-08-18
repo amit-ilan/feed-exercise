@@ -45,7 +45,7 @@ class FeedRepository(
         for (item in feedResponse.templatesMetadata) {
             feedItemEntityList.add(toFeedItemEntity(item))
         }
-        return saveItemsToDB(feedItemEntityList)// io
+        return saveItemsToDB(feedItemEntityList)
     }
 
     /**
