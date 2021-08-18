@@ -6,6 +6,7 @@ import com.lightricks.feedexercise.data.FeedItem
 import com.lightricks.feedexercise.data.FeedRepository
 import com.lightricks.feedexercise.util.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.lang.IllegalArgumentException
 
@@ -18,6 +19,7 @@ open class FeedViewModel(private val repository: FeedRepository) : ViewModel() {
     private val isEmpty = MutableLiveData<Boolean>()
     private val feedItems = MediatorLiveData<List<FeedItem>>()
     private val networkErrorEvent = MutableLiveData<Event<String>>()
+    private val compositeDisposable = CompositeDisposable()
 
     fun getIsLoading(): LiveData<Boolean> = isLoading
     fun getIsEmpty(): LiveData<Boolean> = isEmpty
@@ -37,10 +39,14 @@ open class FeedViewModel(private val repository: FeedRepository) : ViewModel() {
 
     @SuppressLint("CheckResult")
     fun loadFeedItems() {
-        repository.refresh()
+        compositeDisposable.add(repository.refresh()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ handleSuccess() }, { error -> handleNetworkError(error) })
+            .subscribe({ handleSuccess() }, { error -> handleNetworkError(error) }))
+    }
+
+    override fun onCleared(){
+        compositeDisposable.clear()
     }
 
     private fun updateFeedItems(items: List<FeedItem>) {

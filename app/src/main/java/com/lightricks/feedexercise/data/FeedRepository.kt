@@ -25,7 +25,7 @@ class FeedRepository(
 ) {
 
     private val feedItems: LiveData<List<FeedItem>> =
-        Transformations.map(feedDatabase.FeedItemDao().getAll()) {
+        Transformations.map(feedDatabase.feedItemDao().getAll()) {
             it.toFeedItems()
         }
 
@@ -41,8 +41,7 @@ class FeedRepository(
     }
 
     private fun handleResponse(feedResponse: GetFeedResponse): Completable {
-        val feedItemEntityList: MutableList<FeedItemEntity> =
-            emptyList<FeedItemEntity>().toMutableList()
+        val feedItemEntityList = mutableListOf<FeedItemEntity>()
         for (item in feedResponse.templatesMetadata) {
             feedItemEntityList.add(toFeedItemEntity(item))
         }
@@ -61,7 +60,7 @@ class FeedRepository(
     }
 
     private fun saveItemsToDB(items: MutableList<FeedItemEntity>): Completable {
-        return feedDatabase.FeedItemDao().insertAll(items)
+        return feedDatabase.feedItemDao().insertAll(items)
     }
 
 
