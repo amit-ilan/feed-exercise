@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.lightricks.feedexercise.database.FeedDatabase
 import com.lightricks.feedexercise.database.FeedItemEntity
-import com.lightricks.feedexercise.network.FeedApi
+import com.lightricks.feedexercise.network.FeedApiService
 import com.lightricks.feedexercise.network.GetFeedResponse
 import com.lightricks.feedexercise.network.TemplatesMetadataItem
 import io.reactivex.Completable
@@ -20,7 +20,7 @@ private const val BASE_URL: String =
  * where the data actually comes from (network, database or somewhere else).
  */
 class FeedRepository(
-    private val feedApiService: FeedApi,
+    private val feedApiService: FeedApiService,
     private val feedDatabase: FeedDatabase
 ) {
 
@@ -33,7 +33,7 @@ class FeedRepository(
 
     @SuppressLint("CheckResult")
     fun refresh(): Completable {
-        return feedApiService.service.getFeed()
+        return feedApiService.getFeed()
             .subscribeOn(Schedulers.io())
             .flatMapCompletable { feedResponse ->
                 handleResponse(feedResponse)

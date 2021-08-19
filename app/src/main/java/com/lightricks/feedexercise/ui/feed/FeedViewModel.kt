@@ -81,7 +81,7 @@ class FeedViewModelFactory(private val context: Context) : ViewModelProvider.Fac
         }
 
         val repository = FeedRepository(
-            FeedApi, getDatabase(context)
+            FeedApi.service, getDatabase(context)
         )
 
         @Suppress("UNCHECKED_CAST")
