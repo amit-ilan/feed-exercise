@@ -12,7 +12,6 @@ import com.lightricks.feedexercise.database.FeedItemDao
 import com.lightricks.feedexercise.database.FeedItemEntity
 import com.lightricks.feedexercise.network.MockFeedApiService
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers.greaterThan
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -70,7 +69,7 @@ class FeedRepositoryTest {
         observer.awaitTerminalEvent()
         observer.assertComplete()
         observer.assertNoErrors()
-        assertThat(feedDao.getCount(),greaterThan(0))
+        assertThat(feedDao.getCount(), greaterThan(0))
     }
 }
 
