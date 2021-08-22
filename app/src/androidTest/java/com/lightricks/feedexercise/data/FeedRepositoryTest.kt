@@ -1,6 +1,7 @@
 package com.lightricks.feedexercise.data
 
 import android.content.Context
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -58,7 +59,9 @@ class FeedRepositoryTest {
         feedDao.insertAll(feedItemEntities).blockingAwait()
         val res = repository.getFeedItems().blockingObserve()
         if (res != null) {
-            assertEquals(feedItemEntities.size, res.size)
+            assertEquals(feedItemEntities[0].id, res[0].id)
+            assertEquals(feedItemEntities[0].isPremium, res[0].isPremium)
+            assertEquals(BASE_URL +feedItemEntities[0].thumbnailUrl, res[0].thumbnailUrl)
         }
     }
 

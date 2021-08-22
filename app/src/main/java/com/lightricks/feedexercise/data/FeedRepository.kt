@@ -12,7 +12,7 @@ import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 
 
-private const val BASE_URL: String =
+const val BASE_URL: String =
     "https://assets.swishvideoapp.com/Android/demo/catalog/thumbnails/"
 
 /**
